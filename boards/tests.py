@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse, resolve
 
 from boards.models import Board
-from boards.views import home, board_topics
+from boards.views import home, board_topics, new_topic
 
 
 # Create your tests here.
@@ -44,4 +44,35 @@ class BoardTopicsTests(TestCase):
         board_topics_url = reverse('board_topics', kwargs={'pk': 1})
         response = self.client.get(board_topics_url)
         homepage_url = reverse('home')
+        self.assertContains(response, f'href="{homepage_url}"')
+
+class NewTopicTests(TestCase):
+    def setUp(self):
+        self.board = Board.objects.create(name='Django', description='Django Board')
+        url = reverse('home')
+        self.response = self.client.get(url)
+    def test_new_topic_view_success_status_code(self):
+        url = reverse('new_topic', kwargs={'pk': 1})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_new_topic_view_not_found_status_code(self):
+        url = reverse('new_topic', kwargs={'pk': 99})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+    def test_new_topic_url_resolve_new_topic_function(self):
+        view = resolve('/boards/1/new/')
+        self.assertEquals(view.func, new_topic)
+
+    def test_new_topic_view_contain_link_to_board_topics_view(self):
+        new_topic_url = reverse('new_topic', kwargs={'pk':1})
+        board_topic_url = reverse('board_topics', kwargs={'pk':1})
+        response = self.client.get(new_topic_url)
+        self.assertContains(response, f'href="{board_topic_url}"')
+
+    def test_new_topic_view_contain_link_to_homepage_view(self):
+        new_topic_url = reverse('new_topic', kwargs={'pk':1})
+        homepage_url = reverse('home')
+        response = self.client.get(new_topic_url)
         self.assertContains(response, f'href="{homepage_url}"')
