@@ -11,6 +11,10 @@
 {% endblock %}
 
 {% block content %}
+    <div class="mb-4">
+        <a href="{%url 'new_topic' board.pk%}" class="btn btn-primary">New topic</a>
+    </div>
+
     <table class="table">
         <thead class="thead-dark">
             <tr>
@@ -28,7 +32,7 @@
                 <td>{{topic.starter.username}}</td>
                 <td>0</td>
                 <td>0</td>
-                <td>{{topic.last_updated}}</td>
+                <td>{{topic.last_update}}</td>
             </tr>
             {% endfor %}
         </tbody>
