@@ -50,6 +50,7 @@ def new_topic(request, pk):
 
         # user = User.objects.first()
 
+        # after using Django Forms API
         if form.is_valid():
             topic = form.save(commit=False)
             topic.board = board
@@ -60,6 +61,10 @@ def new_topic(request, pk):
                 topic=topic,
                 created_by=user
             )
+
+        # core process with Django Forms API
+        # if form.is_valid():
+        #     topic = form.save()
 
         # before using Django Forms API
         # topic = Topic.objects.create(
@@ -77,4 +82,8 @@ def new_topic(request, pk):
             return redirect('board_topics', pk=board.pk)
     else:
         form = NewTopicForm()
+    # after using Django Forms API
     return render(request, 'new_topic.html', {'board': board, 'form':form})
+
+    # core process with Django Forms API
+    # return render(request, 'new_topic.html', {'form': form})
